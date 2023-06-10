@@ -1,37 +1,37 @@
-# streamlit-fastapi-model-serving
+# Image segmentation model-serving on Google Kubernetes Engine
+![](/images/webapp.png)
 
-Simple example of usage of streamlit and FastAPI for ML model serving described on [this blogpost](https://davidefiocco.github.io/streamlit-fastapi-ml-serving) and [PyConES 2020 video](https://www.youtube.com/watch?v=IvHCxycjeR0).
+This repository is an enhanced version of the original [project](https://davidefiocco.github.io/streamlit-fastapi-ml-serving), which demonstrates the usage of Streamlit and FastAPI for serving a machine learning-based image semantic segmentation model. The primary objective of this repository is to deploy the application on [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine) for increased scalability and reliability.
 
-When developing simple APIs that serve machine learning models, it can be useful to have _both_ a backend (with API documentation) for other applications to call and a frontend for users to experiment with the functionality.
+While the original project focused on providing both a backend API and a frontend interface for users, this repository extends the functionality by incorporating deployment on GKE. By leveraging GKE's managed Kubernetes service, we ensure efficient container orchestration and enable seamless scaling of the application.
 
-In this example, we serve an [image semantic segmentation model](https://pytorch.org/hub/pytorch_vision_deeplabv3_resnet101/) using `FastAPI` for the backend service and `streamlit` for the frontend service. `docker-compose` orchestrates the two services and allows communication between them.
+In this enhanced version, we have adapted the original codebase to support deployment on GKE. The repository includes the necessary configuration files, such as Kubernetes deployment manifests and associated resources, which can be easily managed and deployed using the Cloud Run extension within Visual Studio Code.
+The [image semantic segmentation model](https://pytorch.org/hub/pytorch_vision_deeplabv3_resnet101/) is served using `FastAPI` for the backend service and `streamlit` for the frontend service. 
 
-To run the example in a machine running Docker and docker-compose, run:
+## Steps to deploy the web application on GKE
+1. Clone the repo
+```
+git clone https://github.com/chandrakanth-jp/image-segmentation-gke-webapp.git
+```
+2. Go to the folders 'fastapi' and 'streamlit' and build docker images 
+```
+docker build -t fastapi
+docker build -t streamlit
+```
+3.Set up GKE Cluster using Cloud Run Extension:
+- Install the Cloud Run extension in Visual Studio Code
+- Use the Cloud Run extension to set up a GKE cluster
 
-    docker-compose build
-    docker-compose up
+    ![](/images/select_platform.png)
 
-To visit the FastAPI documentation of the resulting service, visit http://localhost:8000 with a web browser.  
-To visit the streamlit UI, visit http://localhost:8501.
+- Follow the extension's prompts and configure the cluster
+-  Specify the necessary deployment configurations, such as the number of replicas and resource allocation
 
-Logs can be inspected via:
+    ![](/images/create_cluster.png)
+    
+4. Run the application on the cluster
+- Use the Cloud Run extension to deploy the application to the GKE cluster
 
-    docker-compose logs
-
-### Deployment
-
-To deploy the app, one option is deployment on Heroku (with [Dockhero](https://elements.heroku.com/addons/dockhero)). To do so:
-
-- rename `docker-compose.yml` to `dockhero-compose.yml`
-- create an app (we refer to its name as `<my-app>`) on a Heroku account
-- install locally the Heroku CLI, and enable the Dockhero plugin with `heroku plugins:install dockhero`
-- add to the app the DockHero add-on (and with a plan allowing enough RAM to run the model!)
-- in a command line enter `heroku dh:compose up -d --app <my-app>` to deploy the app
-- to find the address of the app on the web, enter `heroku dh:open --app <my-app>`
-- to visualize the api, visit the address adding port `8000/docs`, e.g. `http://dockhero-<named-assigned-to-my-app>-12345.dockhero.io:8000/docs`(not `https`)
-- visit the address adding `:8501` to visit the streamlit interface
-- logs are accessible via `heroku logs -p dockhero --app <my-app>`
-
-### Debugging
-
-To modify and debug the app, [development in containers](https://davidefiocco.github.io/debugging-containers-with-vs-code) can be useful (and kind of fun!).
+    ![](/images/run.png)
+    
+Once the application is deployed on the GKE cluster, you can access and interact with it using the specified URL or IP address.
