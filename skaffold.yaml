@@ -1,0 +1,20 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: image-segmentation-gke-webapp
+build:
+  artifacts:
+    - image: fastapi_streamlit
+      context: fastapi
+      docker:
+        dockerfile: Dockerfile
+    - image: streamlit
+      context: streamlit
+      docker:
+        dockerfile: Dockerfile
+  tagPolicy:
+    sha256: {}
+manifests:
+  rawYaml:
+    - kubernetes-manifests/gke.deployment.yaml
+    - kubernetes-manifests/gke.service.yaml
