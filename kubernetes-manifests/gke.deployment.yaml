@@ -1,0 +1,44 @@
+# This Deployment manifest defines:
+# - single-replica deployment of the container image, with label "app: image-segmentation"
+# - Pod exposes port 8080
+# - specify PORT environment variable to the container process
+# Syntax reference https://kubernetes.io/docs/concepts/configuration/overview/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-segmentation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-segmentation
+  template:
+    metadata:
+      labels:
+        app: image-segmentation
+    spec:
+      containers:
+      - name: fastapi
+        image: fastapi_streamlit
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"
+        readinessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 100
+      - name: streamlit
+        image: streamlit
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8501
+        env:
+        - name: PORT
+          value: "8501"
+        readinessProbe:
+          tcpSocket:
+            port: 8501
+          initialDelaySeconds: 100
