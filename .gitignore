@@ -1,4 +1,4 @@
 .vscode/
 .devcontainer/
 *.pyc
-.skaffold.yaml
+skaffold.yaml
